@@ -1,19 +1,12 @@
 class PurchasesController < ApplicationController
   def create
-    if purchase_params[:gateway] == 'paypal'
-      render_purchase_result
-
-    elsif purchase_params[:gateway] == 'stripe'
-      render_purchase_result
-    else
-      render json: { errors: [{ message: 'Gateway not supported!' }] }, status: :unprocessable_entity
-    end
+    render_purchase_result
   end
 
   private
 
   def render_purchase_result
-    purchase_result = PurchaseService.purchase(purchase_params[:user], purchase_params[:cart_id], address_params)
+    purchase_result = PurchaseService.purchase(purchase_params[:user], purchase_params[:cart_id], address_params, purchase_params[:gateway])
       if !purchase_result[:completed]
         return render json: { errors: purchase_result[:errors] }, status: :unprocessable_entity
       else
