@@ -1,20 +1,14 @@
 class PurchasesController < ApplicationController
   def create
     if purchase_params[:gateway] == 'paypal'
-      cart_id = purchase_params[:cart_id]
-
-      cart = Cart.find_by(id: cart_id)
-
+      
+      cart = CartService.get_cart(purchase_params[:cart_id])
+      
       unless cart
         return render json: { errors: [{ message: 'Cart not found!' }] }, status: :unprocessable_entity
       end
 
-      user = if cart.user.nil?
-               user_params = purchase_params[:user] ? purchase_params[:user] : {}
-               User.create(**user_params.merge(guest: true))
-             else
-               cart.user
-             end
+      user = CartService.new(cart).get_user(purchase_params[:user])
 
       if user.valid?
         order = Order.new(
