@@ -3,11 +3,14 @@ require 'rails_helper'
 RSpec.describe CartService do
 
   describe 'get cart' do
+
     context 'valid cart' do
+
+      let!(:user) { create(:user) }
+      let!(:cart) { create(:cart, user: user) }
+
       it 'should find a cart by id' do
-        user = User.create!(email: 'user@spec.io', first_name: "John", last_name: "Doe", guest: false)
-        new_cart = Cart.create!(user_id: user.id)
-        cart = CartService.get_cart(1)
+        new_cart = CartService.get_cart(1)
         expect(cart).to eq(new_cart)
       end
     end
@@ -22,10 +25,12 @@ RSpec.describe CartService do
 
   describe 'get user' do
     context 'there is a cart with valid user' do
+
+      let!(:user) { create(:user) }
+      let!(:cart) { create(:cart, user: user) }
+
       it 'should returns the user' do
-        user = User.create!(email: 'user@spec.io', first_name: "John", last_name: "Doe", guest: false)
-        new_cart = Cart.create!(user_id: user.id)
-        cart_user = CartService.new(new_cart).get_user(nil)
+        cart_user = CartService.new(cart).get_user(nil)
         expect(user).to eq(cart_user)
       end
     end
@@ -37,6 +42,6 @@ RSpec.describe CartService do
         expect{ CartService.new(new_cart).get_user(user_params)}.to change(User, :count).by(1)
       end
     end
-    
+
   end
 end
