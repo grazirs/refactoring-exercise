@@ -1,12 +1,12 @@
 class PurchaseService
   def self.purchase (user, cart_id, address, gateway)
     if ['paypal', 'stripe'].include? gateway
-      cart = CartService.get_cart(cart_id)
+      cart = Cart.find_by(id: cart_id)
       unless cart
         return { errors: [{ message: 'Cart not found!' }], completed: false }
       end
 
-      user = CartService.new(cart).get_user(user)
+      user = CartService.call(cart, user)
 
       if user.valid?
         order = OrderService.create_order(cart, user, address)

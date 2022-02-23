@@ -43,7 +43,6 @@ RSpec.describe PurchaseService do
 
       it 'should not complete the order' do
         result = PurchaseService.purchase( nil, cart.id, address, 'paypal' )
-        puts result
         expect(result[:completed]).to eq (false)
       end
     end

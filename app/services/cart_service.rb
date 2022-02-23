@@ -1,14 +1,15 @@
 class CartService
-  def initialize(cart)
-    @cart = cart
+  def self.call(cart, user)
+    new(cart, user).get_user
   end
-  def self.get_cart(cart_id)
-    Cart.find_by(id: cart_id)
+  def initialize(cart, user)
+    @cart = cart
+    @user = user
   end
 
-  def get_user(user)
+  def get_user
     if @cart.user.nil?
-      user_params = user ? user : {}
+      user_params = @user ? @user : {}
       User.create(**user_params.merge(guest: true))
     else
       @cart.user
