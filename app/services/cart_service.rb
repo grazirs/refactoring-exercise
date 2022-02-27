@@ -2,6 +2,7 @@ class CartService
   def self.call(cart, user)
     new(cart, user).get_user
   end
+
   def initialize(cart, user)
     @cart = cart
     @user = user
@@ -15,5 +16,4 @@ class CartService
       @cart.user
     end
   end
-
 end

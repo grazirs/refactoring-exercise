@@ -6,7 +6,7 @@ RSpec.describe OrderService do
     let!(:user) { create(:user) }
     let!(:cart) { create(:cart, user: user) }
     
-    it 'should create a new order' do
+    it 'creates a new order' do
       address = { 
         address_1: 'Av bla',
         address_2: 'Av Loop',
@@ -15,9 +15,7 @@ RSpec.describe OrderService do
         country: 'Brazil',
         zip: '2344567'
       }
-    expect { OrderService.create_order(cart, user, address) }.to change(Order, :count).by(1) 
+      expect { OrderService.create_order(cart, user, address) }.to change(Order, :count).by(1) 
     end
-    
   end
-
 end

@@ -16,15 +16,27 @@ RSpec.describe PurchaseService do
     context 'when choose a invalid gateway' do      
       let!(:cart) { create(:cart, user: user) }
 
-      it 'should returns a message error' do
-      result = PurchaseService.purchase(user, cart.id, address, nil)
-      expect(result).to eq( { errors: [{ message: 'Gateway not supported!' }], completed: false } ) 
+      it 'returns a message error' do
+        params = {
+          user: user, 
+          cart_id: cart.id,
+          address: address,
+          gateway: nil
+        }
+        result = PurchaseService.purchase(params)
+        expect(result[:errors][0][:message]).to eq('Gateway not supported!') 
       end
     end
 
     context 'when the cart does not exist' do
-      it 'should returns a message error' do
-        result = PurchaseService.purchase(user, nil, address, 'paypal' )
+      it 'returns a message error' do
+        params = {
+          user: user, 
+          cart_id: nil,
+          address: address,
+          gateway: 'paypal'
+        }
+        result = PurchaseService.purchase(params)
         expect(result).to eq( { errors: [{ message: 'Cart not found!' }], completed: false } )
       end
     end
@@ -32,8 +44,14 @@ RSpec.describe PurchaseService do
     context 'when all the data are valid' do
       let!(:cart) { create(:cart, user: user) }
 
-      it 'should complete the order' do
-        result = PurchaseService.purchase(user, cart.id, address, 'paypal' )
+      it 'completes the order' do
+        params = {
+          user: user, 
+          cart_id: cart.id,
+          address: address,
+          gateway: 'paypal'
+        }
+        result = PurchaseService.purchase(params)
         expect(result).to eq ( { order: { id: Order.last.id }, completed: true } )
       end
     end
@@ -41,11 +59,16 @@ RSpec.describe PurchaseService do
     context 'when order is invalid' do
       let!(:cart) { create(:cart, user: nil) }
 
-      it 'should not complete the order' do
-        result = PurchaseService.purchase( nil, cart.id, address, 'paypal' )
+      it 'does not complete the order' do
+        params = {
+          user: nil, 
+          cart_id: cart.id,
+          address: address,
+          gateway: 'paypal'
+        }
+        result = PurchaseService.purchase(params)
         expect(result[:completed]).to eq (false)
       end
     end
-
   end
 end

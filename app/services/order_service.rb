@@ -1,4 +1,6 @@
 class OrderService
+
+  SHIPPING_COSTS = 100
   
   def self.create_order(cart, user, address)
     order = Order.new(
@@ -19,8 +21,8 @@ class OrderService
           order: order,
           sale: item.sale,
           unit_price_cents: item.sale.unit_price_cents,
-          shipping_costs_cents: shipping_costs,
-          paid_price_cents: item.sale.unit_price_cents + shipping_costs
+          shipping_costs_cents: SHIPPING_COSTS,
+          paid_price_cents: item.sale.unit_price_cents + SHIPPING_COSTS
         )
       end
     end
@@ -28,11 +30,4 @@ class OrderService
     order.save
     order
   end
-
-  private
-
-  def self.shipping_costs
-    100
-  end
-
 end
