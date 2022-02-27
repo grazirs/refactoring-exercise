@@ -15,6 +15,12 @@ class OrderService
       zip: address[:zip],
     )
 
+    add_items(cart,order)
+    order.save
+    order
+  end
+
+  def self.add_items(cart, order)
     cart.items.each do |item|
       item.quantity.times do
         order.items << OrderLineItem.new(
@@ -26,8 +32,5 @@ class OrderService
         )
       end
     end
-
-    order.save
-    order
   end
 end
